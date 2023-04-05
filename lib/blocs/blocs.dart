@@ -1,1 +1,1 @@
-export 'package:first_flutter_bloc/blocs/bloc/users_bloc.dart';
+export 'package:first_flutter_bloc/blocs/users/users_bloc.dart';

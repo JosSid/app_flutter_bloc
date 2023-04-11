@@ -1,5 +1,8 @@
+import 'package:first_flutter_bloc/blocs/blocs.dart';
+import 'package:first_flutter_bloc/models/users.dart';
 import 'package:first_flutter_bloc/presentation/screens/screens.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   static String routeName = '/';
@@ -13,36 +16,57 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
+    context.read<UsersBloc>().add(GetAllUsers());
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Lista de usuarios'),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.search),
-          )
-        ],
-      ),
-      body: ListView.builder(
-        physics: const BouncingScrollPhysics(),
-        itemCount: 6,
-        itemBuilder: (context, index) {
-          return _item(context, index);
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.pushNamed(context, NewUserScreen.routeName),
-        child: const Icon(Icons.person_add_rounded),
-      ),
+    return BlocBuilder<UsersBloc, UsersState>(
+      builder: (context, state) {
+        if (state.error != '') {
+          Future.delayed(Duration.zero, () {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(state.error),
+              backgroundColor: Theme.of(context).primaryColor,
+            ));
+          });
+        }
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Lista de usuarios'),
+            actions: [
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.search),
+              )
+            ],
+          ),
+          body: state.loading
+              ? Center(
+                  child: CircularProgressIndicator(
+                      color: Theme.of(context).primaryColor),
+                )
+              : ListView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: state.listUsers.length,
+                  itemBuilder: (context, index) {
+                    final user = state.listUsers[index];
+                    return _item(context, index, user);
+                  },
+                ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () =>
+                Navigator.pushNamed(context, NewUserScreen.routeName),
+            child: const Icon(Icons.person_add_rounded),
+          ),
+        );
+      },
     );
   }
 
-  Widget _item(BuildContext context, int index) {
+  Widget _item(BuildContext context, int index, UserModel userModel) {
     return GestureDetector(
       onTap: () {
         showDialog(
@@ -72,18 +96,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: Container(
-                      width: 8.0,
-                      height: 8.0,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(10.0),
+                  if (userModel.status == 'active')
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: Container(
+                        width: 8.0,
+                        height: 8.0,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
                       ),
-                    ),
-                  )
+                    )
                 ],
               ),
             ),
@@ -98,9 +123,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       SizedBox(
                         width: MediaQuery.of(context).size.width * .55,
-                        child: const Text(
-                          'Nombre de usuario',
-                          style: TextStyle(
+                        child: Text(
+                          userModel.name!,
+                          style: const TextStyle(
                             fontSize: 20.0,
                             color: Colors.white,
                           ),
@@ -120,9 +145,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 10.0),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * .65,
-                  child: const Text(
-                    'correo@correo.com',
-                    style: TextStyle(
+                  child: Text(
+                    userModel.email!,
+                    style: const TextStyle(
                       fontSize: 16.0,
                       color: Colors.white54,
                     ),

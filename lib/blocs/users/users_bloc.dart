@@ -1,21 +1,22 @@
 import 'package:equatable/equatable.dart';
 import 'package:first_flutter_bloc/models/models.dart';
+import 'package:first_flutter_bloc/repositories/repositories.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'users_event.dart';
 part 'users_state.dart';
 
 class UsersBloc extends Bloc<UsersEvent, UsersState> {
+  late UserRepository _userRepository;
   UsersBloc() : super(const UsersState()) {
+    _userRepository = UserRepositoryImpl();
+
     on<GetAllUsers>((event, emit) async {
       try {
         emit(state.copyWith(loading: true));
 
-        ///TO DO
-        final resp = //CONSULTAR LA API;
-            emit(state.copyWith(
-          loading: false, /*listUsers: resp*/
-        ));
+        final resp = await _userRepository.getAllUsers();
+        emit(state.copyWith(loading: false, listUsers: resp));
       } catch (error) {
         try {
           emit(state.copyWith(

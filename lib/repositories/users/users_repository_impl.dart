@@ -25,4 +25,25 @@ class UserRepositoryImpl extends UserRepository {
         .map((element) => UserModel.fromJson(element))
         .toList();
   }
+
+  @override
+  Future<bool> saveUser(UserModel userModel) async {
+    var response = await Dio().post(
+      '${Constants.apiUrl}/users',
+      data: userModel.toJson(),
+      options: Options(
+        headers: {
+          Headers.contentTypeHeader: 'application/json',
+          Headers.acceptHeader: 'application/json',
+          'Authorization': 'Bearer ${Constants.token}'
+        },
+      ),
+    );
+
+    if (response.statusCode != 201) {
+      throw Exception(response.statusMessage);
+    }
+
+    return true;
+  }
 }

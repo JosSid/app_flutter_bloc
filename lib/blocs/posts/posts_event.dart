@@ -6,3 +6,9 @@ abstract class PostsEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class GetAllPostByUser extends PostsEvent {
+  final int userId;
+
+  const GetAllPostByUser({required this.userId});
+}

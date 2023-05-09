@@ -12,6 +12,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<UsersBloc>(create: (_) => UsersBloc()),
+        BlocProvider<PostsBloc>(create: (_) => PostsBloc()),
       ],
       child: MaterialApp(
         title: 'App Flutter BLOC',

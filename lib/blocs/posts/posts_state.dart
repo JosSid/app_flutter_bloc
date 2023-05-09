@@ -13,12 +13,12 @@ class PostsState extends Equatable {
     this.add = false,
   });
 
-  PostsState copyWith(
+  PostsState copyWith({
     bool? loading,
     List<PostModel>? listPosts,
     String? error,
     bool? add,
-  ) =>
+  }) =>
       PostsState(
         loading: loading ?? this.loading,
         listPosts: listPosts ?? this.listPosts,

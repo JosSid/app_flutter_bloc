@@ -1,8 +1,14 @@
+import 'package:first_flutter_bloc/blocs/posts/posts_bloc.dart';
+import 'package:first_flutter_bloc/models/posts.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ListPostsWidget extends StatefulWidget {
+  final int userId;
+
   const ListPostsWidget({
     Key? key,
+    required this.userId,
   }) : super(key: key);
 
   @override
@@ -14,38 +20,54 @@ class _ListPostsWidgetState extends State<ListPostsWidget> {
 
   @override
   void initState() {
+    context.read<PostsBloc>().add(GetAllPostByUser(userId: widget.userId));
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20.0),
-      color: Colors.grey[200],
-      child: _selectPost == null
-          ? ListView.builder(
-              physics: const BouncingScrollPhysics(),
-              itemCount: 2,
-              itemBuilder: (context, index) {
-                return _item(index);
-              },
-            )
-          : _detailPost(),
+    return BlocBuilder<PostsBloc, PostsState>(
+      builder: (context, state) {
+        return state.loading
+            ? Center(
+                child: CircularProgressIndicator(
+                    color: Theme.of(context).primaryColor),
+              )
+            : Container(
+                padding: const EdgeInsets.all(20.0),
+                color: Colors.grey[200],
+                child: _selectPost == null
+                    ? state.listPosts.isEmpty
+                        ? const Center(
+                            child: Text('No tiene posts registrados'),
+                          )
+                        : ListView.builder(
+                            physics: const BouncingScrollPhysics(),
+                            itemCount: state.listPosts.length,
+                            itemBuilder: (context, index) {
+                              final post = state.listPosts[index];
+                              return _item(index, post);
+                            },
+                          )
+                    : _detailPost(state.listPosts[_selectPost!]),
+              );
+      },
     );
   }
 
-  Widget _item(int index) {
+  Widget _item(int index, PostModel postModel) {
     return GestureDetector(
       onTap: () {
         setState(() {
           _selectPost = index;
         });
       },
-      child: _detailPost(),
+      child: _detailPost(postModel),
     );
   }
 
-  Widget _detailPost() {
+  Widget _detailPost(PostModel postModel) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 500),
       margin: const EdgeInsets.only(bottom: 20.0),
@@ -63,9 +85,9 @@ class _ListPostsWidgetState extends State<ListPostsWidget> {
             children: [
               SizedBox(
                 width: MediaQuery.of(context).size.width * .7,
-                child: const Text(
-                  'Titulo de post',
-                  style: TextStyle(
+                child: Text(
+                  postModel.title!,
+                  style: const TextStyle(
                     fontSize: 16.0,
                     color: Color(0xFF2e2c3f),
                     fontWeight: FontWeight.w600,
@@ -93,7 +115,7 @@ class _ListPostsWidgetState extends State<ListPostsWidget> {
           SizedBox(
             height: _selectPost != null ? null : 50.0,
             child: Text(
-              'Este es el contenido del post',
+              postModel.body!,
               style: const TextStyle(
                 fontSize: 14.0,
                 color: Colors.grey,

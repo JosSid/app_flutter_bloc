@@ -121,8 +121,8 @@ class InfoWidget extends StatelessWidget {
               ),
             ),
           ),
-          const Expanded(
-            child: ListPostsWidget(),
+          Expanded(
+            child: ListPostsWidget(userId: userModel.id!),
           )
         ],
       ),

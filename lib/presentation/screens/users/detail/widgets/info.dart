@@ -52,7 +52,8 @@ class InfoWidget extends StatelessWidget {
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute<void>(
-                    builder: (BuildContext context) => const NewPostScreen(),
+                    builder: (BuildContext context) =>
+                        NewPostScreen(userId: userModel.id!),
                   ),
                 ),
                 child: Container(

@@ -12,7 +12,7 @@ class PostRepositoryImpl extends PostRepository {
         headers: {
           Headers.contentTypeHeader: 'apllication/json',
           Headers.acceptHeader: 'application/json',
-          'Autorization': "Bearer ${Constants.token}"
+          'Authorization': "Bearer ${Constants.token}"
         },
       ),
     );
@@ -24,5 +24,27 @@ class PostRepositoryImpl extends PostRepository {
     return (response.data as List)
         .map((element) => PostModel.fromJson(element))
         .toList();
+  }
+
+  @override
+  Future<bool> savePostByUser(PostModel postModel) async {
+    var response = await Dio().post(
+      '${Constants.apiUrl}/users/${postModel.userId}/posts',
+      data: postModel.toJson(),
+      options: Options(
+        headers: {
+          Headers.contentTypeHeader: 'application/json',
+          Headers.acceptHeader: 'application/json',
+          'Authorization': "Bearer ${Constants.token}",
+        },
+      ),
+    );
+
+    // Si no es 200 devuelve el error
+    if (response.statusCode != 201) {
+      throw Exception(response.statusMessage);
+    }
+
+    return true;
   }
 }

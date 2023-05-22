@@ -4,4 +4,6 @@ abstract class UserRepository {
   Future<List<UserModel>> getAllUsers();
 
   Future<bool> saveUser(UserModel userModel);
+
+  Future<bool> removeUser(int userId);
 }

@@ -16,3 +16,9 @@ class SaveUser extends UsersEvent {
 
   const SaveUser({required this.userModel});
 }
+
+class RemoveUser extends UsersEvent {
+  final int userId;
+
+  const RemoveUser({required this.userId});
+}

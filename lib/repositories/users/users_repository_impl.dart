@@ -46,4 +46,24 @@ class UserRepositoryImpl extends UserRepository {
 
     return true;
   }
+
+  @override
+  Future<bool> removeUser(int userId) async {
+    var response = await Dio().delete(
+      '${Constants.apiUrl}/users/$userId',
+      options: Options(
+        headers: {
+          Headers.contentTypeHeader: 'application/json',
+          Headers.acceptHeader: 'application/json',
+          'Authorization': 'Bearer ${Constants.token}'
+        },
+      ),
+    );
+
+    if (response.statusCode != 204) {
+      throw Exception(response.statusMessage);
+    }
+
+    return true;
+  }
 }

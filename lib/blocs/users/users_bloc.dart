@@ -11,8 +11,8 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
   UsersBloc() : super(const UsersState()) {
     _userRepository = UserRepositoryImpl();
 
-    on<UsersInit>(((event, emit) =>
-        emit(state.copyWith(add: false, loading: false, error: ''))));
+    on<UsersInit>(((event, emit) => emit(state.copyWith(
+        add: false, loading: false, error: '', removed: false))));
 
     on<GetAllUsers>((event, emit) async {
       try {
@@ -36,6 +36,22 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
 
         await _userRepository.saveUser(event.userModel);
         emit(state.copyWith(loading: false, error: '', add: true));
+      } catch (error) {
+        try {
+          emit(state.copyWith(
+              loading: false, error: (error as dynamic)['message']));
+        } catch (err) {
+          emit(state.copyWith(loading: false, error: 'Ocurrio un error'));
+        }
+      }
+    });
+
+    on<RemoveUser>((event, emit) async {
+      try {
+        emit(state.copyWith(loading: true));
+
+        await _userRepository.removeUser(event.userId);
+        emit(state.copyWith(loading: false, error: '', removed: true));
       } catch (error) {
         try {
           emit(state.copyWith(

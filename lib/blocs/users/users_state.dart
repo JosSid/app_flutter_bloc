@@ -26,7 +26,7 @@ class UsersState extends Equatable {
         loading: loading ?? this.loading,
         error: error ?? this.error,
         add: add ?? this.add,
-        removed: removed ?? this.loading,
+        removed: removed ?? this.removed,
         listUsers: listUsers ?? this.listUsers,
       );
 

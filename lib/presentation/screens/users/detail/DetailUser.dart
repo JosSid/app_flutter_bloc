@@ -1,9 +1,12 @@
+import 'package:first_flutter_bloc/models/models.dart';
 import 'package:first_flutter_bloc/presentation/screens/users/detail/widgets/image_status.dart';
 import 'package:first_flutter_bloc/presentation/screens/users/detail/widgets/info.dart';
 import 'package:flutter/material.dart';
 
 class DetailUserScreen extends StatelessWidget {
-  const DetailUserScreen({super.key});
+  final UserModel user;
+  
+  const DetailUserScreen({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +38,9 @@ class DetailUserScreen extends StatelessWidget {
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: Stack(
-                    children: const [
-                      InfoWidget(),
-                      ImageStatusWidget(),
+                    children: [
+                      InfoWidget(user: user),
+                      ImageStatusWidget(user: user,),
                     ],
                   ),
                 ),

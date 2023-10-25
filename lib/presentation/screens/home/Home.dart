@@ -69,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
       onTap: () {
         showDialog(
           context: context,
-          builder: (context) => const DetailUserScreen(),
+          builder: (context) => DetailUserScreen(user: user,),
         );
       },
       child: Container(
@@ -89,8 +89,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     decoration: BoxDecoration(
                       color: Colors.grey,
                       borderRadius: BorderRadius.circular(40.0),
-                      image: const DecorationImage(
-                        image: AssetImage('assets/images/female.png'),
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/${user.gender}.png'),
                       ),
                     ),
                   ),

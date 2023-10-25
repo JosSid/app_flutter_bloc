@@ -1,11 +1,14 @@
+import 'package:first_flutter_bloc/models/models.dart';
 import 'package:first_flutter_bloc/presentation/screens/screens.dart';
 import 'package:first_flutter_bloc/presentation/screens/users/detail/widgets/list_posts.dart';
 import 'package:first_flutter_bloc/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class InfoWidget extends StatelessWidget {
+  final UserModel user;
   const InfoWidget({
-    Key? key,
+    Key? key, 
+    required this.user,
   }) : super(key: key);
 
   @override
@@ -23,18 +26,18 @@ class InfoWidget extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Text(
-            'Nombre de usuario',
-            style: TextStyle(
+          Text(
+            user.name!,
+            style: const TextStyle(
               fontSize: 30.0,
               color: Color(0xFF2e2c3f),
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 10.0),
-          const Text(
-            'correo@correo.com',
-            style: TextStyle(
+          Text(
+            user.email!,
+            style: const TextStyle(
               fontSize: 16.0,
               color: Colors.grey,
               fontWeight: FontWeight.w600,
